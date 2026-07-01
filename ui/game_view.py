@@ -27,6 +27,7 @@ from utils import decade_color, decade_label
 from ui.components import (
     big_spacer,
     hero_image,
+    jukebox_illustration,
     mystery_card,
     progress_dots,
     score_badge,
@@ -100,8 +101,11 @@ def _start_game(client: Client, num_rounds: int) -> None:
 def _render_home(client: Client) -> None:
     cfg = _get_app_settings(client)
 
-    big_spacer(0.5)
-    hero_image(cfg.get("hero_image_url", ""))
+    big_spacer(0.3)
+    if cfg.get("hero_image_url"):
+        hero_image(cfg["hero_image_url"])
+    else:
+        jukebox_illustration()
 
     st.markdown('<p class="kicker">Muziek van vroeger</p>', unsafe_allow_html=True)
     st.markdown(f"<h1>{cfg.get('welcome_title') or 'Raad het Jaartal!'}</h1>", unsafe_allow_html=True)
@@ -109,9 +113,9 @@ def _render_home(client: Client) -> None:
         f'<p class="subtitle">{cfg.get("welcome_subtitle") or "Herkent u de liedjes van vroeger?"}</p>',
         unsafe_allow_html=True,
     )
-    big_spacer(1.5)
+    big_spacer(1.4)
 
-    if st.button("\u25B6\uFE0F  Start het spel", type="primary", key="home_start"):
+    if st.button("Start het spel", type="primary", key="home_start"):
         st.session_state.view = "setup"
         st.rerun()
 
@@ -141,7 +145,7 @@ def _render_setup(client: Client) -> None:
     cols = st.columns(len(ROUND_CHOICES))
     for col, amount in zip(cols, ROUND_CHOICES):
         with col:
-            if st.button(f"{amount}\nliedjes", key=f"rounds_{amount}", type="primary"):
+            if st.button(f"{amount} liedjes", key=f"rounds_{amount}", type="primary"):
                 _start_game(client, amount)
                 st.rerun()
 

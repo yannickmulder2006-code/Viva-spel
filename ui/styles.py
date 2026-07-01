@@ -1,14 +1,18 @@
 """
 ui/styles.py
 ------------
-Warme, nostalgische en rustige huisstijl voor de app. Bewust seniorvriendelijk:
-grote leesbare tekst, grote knoppen, hoog contrast en een zachte, huiselijke
-sfeer (warme creme/terracotta tinten) in plaats van het standaard "kale"
-Streamlit-uiterlijk.
+Het volledige visuele ontwerpsysteem van de app.
 
-Sfeerbeelden en een eventueel eigen logo worden NIET meegeleverd - die kan de
-instelling zelf toevoegen via het beheerscherm (Instellingen). Zo blijft de
-app juridisch schoon en toch te personaliseren.
+Ontwerprichting (na feedback: "vrolijker, grotere knoppen, professioneler"):
+  - Kahoot/SongPop-achtige zelfverzekerde kleurmomenten per scherm
+  - Duolingo-achtige "3D-knoppen" met een dikke onderrand (voelt drukbaar)
+  - Retro jukebox-sfeer (warme kleuren, eigen illustraties i.p.v. emoji)
+  - Spotify Wrapped-achtige grote typografie op een zachte gradient-achtergrond
+
+Knoppen krijgen hun kleur via Streamlit's automatische 'st-key-<key>'
+CSS-klasse (elke widget met een key= krijgt deze klasse op zijn container).
+Zo kan elk scherm een eigen kleurmoment krijgen zonder rommelig te worden:
+dezelfde knop-stijl, maar een andere kleur per fase van het spel.
 """
 
 from __future__ import annotations
@@ -17,25 +21,33 @@ import streamlit as st
 
 _CSS = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
 
     :root {
-        --bg: #F4E9D8;
-        --bg-soft: #FBF3E7;
-        --card: #FFFDF9;
-        --ink: #3A2E24;
-        --ink-soft: #6B5B4B;
-        --primary: #C0632B;
-        --primary-dark: #9E4E1E;
-        --accent: #2E6E5A;
-        --gold: #D9A441;
-        --shadow: rgba(74, 52, 30, 0.16);
+        --ink: #2B2440;
+        --ink-soft: #5B5270;
+        --card: #FFFFFF;
+        --cream: #FFF8F0;
+
+        --coral: #FF6B57;
+        --coral-dark: #D6432F;
+        --teal: #17B8A6;
+        --teal-dark: #0E8377;
+        --violet: #8B5CF6;
+        --violet-dark: #6633CC;
+        --gold: #FFB238;
+        --gold-dark: #DB8B12;
+
+        --shadow: rgba(43, 36, 64, 0.14);
     }
 
+    /* ---------- Achtergrond: zachte gradient-mesh (professioneel, geen kinderlijke felle vlakken) ---------- */
     .stApp {
-        background:
-            radial-gradient(1200px 500px at 50% -10%, #FBEFD9 0%, rgba(251,239,217,0) 60%),
-            linear-gradient(180deg, #F4E9D8 0%, #EFE0C9 100%);
+        background-color: var(--cream);
+        background-image:
+            radial-gradient(720px 480px at 8% 0%, rgba(255,107,87,0.16) 0%, rgba(255,107,87,0) 60%),
+            radial-gradient(760px 520px at 100% 12%, rgba(23,184,166,0.16) 0%, rgba(23,184,166,0) 60%),
+            radial-gradient(640px 480px at 50% 100%, rgba(139,92,246,0.14) 0%, rgba(139,92,246,0) 60%);
         background-attachment: fixed;
     }
 
@@ -51,24 +63,25 @@ _CSS = """
     }
 
     .block-container {
-        padding-top: 1.5rem;
+        padding-top: 1.4rem;
         padding-bottom: 3rem;
-        max-width: 720px;
+        max-width: 740px;
     }
 
+    /* ---------- Typografie: Fredoka = zelfverzekerd + speels, niet kinderlijk ---------- */
     h1 {
-        font-family: 'Fraunces', Georgia, serif !important;
+        font-family: 'Fredoka', sans-serif !important;
         font-size: 2.9rem !important;
         font-weight: 700 !important;
         color: var(--ink);
         text-align: center;
         letter-spacing: -0.5px;
-        line-height: 1.1;
+        line-height: 1.08;
         margin-bottom: 0.2rem;
     }
 
     h2 {
-        font-family: 'Fraunces', Georgia, serif !important;
+        font-family: 'Fredoka', sans-serif !important;
         font-size: 2.1rem !important;
         font-weight: 600 !important;
         color: var(--ink);
@@ -76,113 +89,137 @@ _CSS = """
     }
 
     h3 {
-        font-family: 'Nunito', sans-serif !important;
+        font-family: 'Fredoka', sans-serif !important;
         font-size: 1.5rem !important;
-        font-weight: 700 !important;
+        font-weight: 600 !important;
         color: var(--ink);
     }
 
     p, li, label, .stMarkdown {
         font-size: 1.18rem !important;
         color: var(--ink-soft);
-        line-height: 1.65;
+        line-height: 1.6;
     }
 
+    /* ---------- Knoppen: dikke '3D'-knoppen a la Duolingo ---------- */
     .stButton > button {
         width: 100%;
-        min-height: 4rem;
+        min-height: 4.4rem;
         font-family: 'Nunito', sans-serif;
-        font-size: 1.35rem !important;
+        font-size: 1.4rem !important;
         font-weight: 800;
         border-radius: 20px;
-        border: 2px solid var(--gold);
-        background: var(--card);
+        border: none;
+        background: #FFFFFF;
         color: var(--ink);
-        padding: 0.6rem 1rem;
-        transition: transform 0.06s ease, box-shadow 0.18s ease, background 0.18s ease;
-        box-shadow: 0 4px 0 var(--shadow);
+        padding: 0.6rem 1.2rem;
+        box-shadow:
+            inset 0 -5px 0 rgba(43,36,64,0.10),
+            0 2px 0 rgba(43,36,64,0.06);
+        transition: transform 0.05s ease, box-shadow 0.12s ease, filter 0.12s ease;
+        position: relative;
     }
+    .stButton > button:hover { filter: brightness(1.03); }
+    .stButton > button:active { transform: translateY(3px); }
 
-    .stButton > button:hover {
-        border-color: var(--primary);
-        background: #FFF8EE;
-        box-shadow: 0 6px 16px rgba(192, 99, 43, 0.22);
-    }
-
-    .stButton > button:active {
-        transform: translateY(3px);
-        box-shadow: 0 1px 0 var(--shadow);
-    }
-
+    /* Grote, opvallende primaire knoppen - dikke 'keycap'-onderrand */
     .stButton > button[kind="primary"] {
-        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-        border-color: var(--primary-dark);
+        font-size: 1.65rem !important;
+        font-weight: 900;
+        min-height: 5.2rem;
         color: #FFFFFF;
-        font-size: 1.55rem !important;
-        min-height: 4.6rem;
-        box-shadow: 0 5px 0 rgba(120, 58, 20, 0.4);
+        border-radius: 24px;
+        background: linear-gradient(180deg, var(--coral) 0%, var(--coral) 78%, var(--coral-dark) 78%);
+        box-shadow: 0 6px 0 var(--coral-dark), 0 14px 26px rgba(214,67,47,0.35);
+        text-shadow: 0 2px 3px rgba(0,0,0,0.15);
+    }
+    .stButton > button[kind="primary"]:hover { filter: brightness(1.05); }
+    .stButton > button[kind="primary"]:active {
+        transform: translateY(5px);
+        box-shadow: 0 1px 0 var(--coral-dark), 0 4px 10px rgba(214,67,47,0.3);
     }
 
-    .stButton > button[kind="primary"]:hover {
-        background: linear-gradient(180deg, #CE6E33 0%, var(--primary) 100%);
-        box-shadow: 0 7px 20px rgba(158, 78, 30, 0.4);
+    /* Kleurmomenten per spelfase, via Streamlit's automatische st-key-* klasse */
+    [class*="st-key-rounds_"] button[kind="primary"],
+    [class*="st-key-next_round"] button[kind="primary"] {
+        background: linear-gradient(180deg, var(--teal) 0%, var(--teal) 78%, var(--teal-dark) 78%) !important;
+        box-shadow: 0 6px 0 var(--teal-dark), 0 14px 26px rgba(14,131,119,0.35) !important;
+    }
+    [class*="st-key-confirm_"] button[kind="primary"],
+    [class*="st-key-play_again"] button[kind="primary"] {
+        background: linear-gradient(180deg, var(--violet) 0%, var(--violet) 78%, var(--violet-dark) 78%) !important;
+        box-shadow: 0 6px 0 var(--violet-dark), 0 14px 26px rgba(102,51,204,0.35) !important;
+    }
+    [class*="st-key-to_ask_title"] button[kind="primary"],
+    [class*="st-key-to_reveal_full"] button[kind="primary"],
+    [class*="st-key-to_end"] button[kind="primary"] {
+        background: linear-gradient(180deg, var(--gold) 0%, var(--gold) 78%, var(--gold-dark) 78%) !important;
+        box-shadow: 0 6px 0 var(--gold-dark), 0 14px 26px rgba(219,139,18,0.35) !important;
+        color: #3A2A05 !important;
+        text-shadow: none !important;
+    }
+
+    /* Kleine, rustige knoppen (terug/uitloggen/beheerder) */
+    .subtle-link .stButton > button {
+        box-shadow: none;
+        border: 2px solid #E4D9CC;
+        background: transparent;
+        min-height: 2.9rem;
+        font-size: 1rem !important;
+        font-weight: 700;
+        width: auto;
+        color: var(--ink-soft);
     }
 
     .stLinkButton > a {
-        min-height: 3.6rem;
+        min-height: 3.8rem;
         font-size: 1.25rem !important;
-        font-weight: 700;
-        border-radius: 18px !important;
+        font-weight: 800;
+        border-radius: 20px !important;
         background: #1DB954 !important;
         color: #FFFFFF !important;
         border: none !important;
+        box-shadow: 0 5px 0 #14883C, 0 12px 22px rgba(29,185,84,0.3) !important;
     }
 
+    /* ---------- Schuifregelaar ---------- */
     [data-testid="stSlider"] [role="slider"] {
-        width: 34px !important;
-        height: 34px !important;
-        background: var(--primary) !important;
-        box-shadow: 0 0 0 7px rgba(192, 99, 43, 0.18) !important;
+        width: 36px !important;
+        height: 36px !important;
+        background: var(--coral) !important;
+        border: 4px solid #FFFFFF !important;
+        box-shadow: 0 0 0 6px rgba(255,107,87,0.22), 0 4px 10px rgba(0,0,0,0.2) !important;
     }
-
     [data-testid="stSlider"] > div > div > div > div {
-        background: var(--primary) !important;
+        background: var(--coral) !important;
     }
-
     [data-testid="stSlider"] > div > div > div {
-        background: #E7D3B3 !important;
-        height: 8px !important;
+        background: #EADFD0 !important;
+        height: 10px !important;
+        border-radius: 999px !important;
     }
-
     [data-testid="stSliderTickBarMin"],
     [data-testid="stSliderTickBarMax"],
     [data-testid="stThumbValue"] {
         display: none !important;
     }
 
+    /* ---------- Kaarten ---------- */
     .card {
         background: var(--card);
         border-radius: 28px;
         padding: 2rem 1.6rem;
-        border: 1px solid #EAD9BE;
-        box-shadow: 0 10px 30px var(--shadow);
+        box-shadow: 0 4px 0 #EADFD0, 0 16px 34px var(--shadow);
         margin-bottom: 1.4rem;
     }
 
     .mystery-card {
-        background: linear-gradient(135deg, #FFF3DE 0%, #F6DEB6 100%);
+        background: linear-gradient(160deg, #FFFFFF 0%, #FFF3E9 100%);
         border-radius: 28px;
         padding: 2.2rem 1.5rem;
         text-align: center;
-        border: 2px solid #E7C77E;
-        box-shadow: 0 10px 30px var(--shadow);
+        box-shadow: 0 4px 0 #F3D9BE, 0 16px 34px var(--shadow);
         margin-bottom: 1.3rem;
-    }
-
-    .mystery-card .icon {
-        font-size: 4rem;
-        line-height: 1;
-        filter: saturate(0.9);
     }
 
     .reveal-card {
@@ -190,56 +227,64 @@ _CSS = """
         border-radius: 28px;
         padding: 2rem 1.5rem 2.2rem;
         text-align: center;
-        border: 1px solid #EAD9BE;
-        box-shadow: 0 12px 34px var(--shadow);
+        box-shadow: 0 4px 0 #EADFD0, 0 18px 38px var(--shadow);
         margin-bottom: 1.2rem;
     }
 
     .reveal-card img {
-        border-radius: 16px;
-        box-shadow: 0 8px 22px rgba(74, 52, 30, 0.28);
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(43,36,64,0.3);
     }
 
     .result-banner {
-        border-radius: 22px;
-        padding: 1.4rem 1rem;
+        border-radius: 26px;
+        padding: 1.6rem 1rem;
         text-align: center;
         margin-bottom: 1.2rem;
-        border: 2px solid;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.06), 0 16px 32px var(--shadow);
     }
-    .result-good   { background: #E4F0E4; border-color: #7FB07F; }
-    .result-close  { background: #FBF0D8; border-color: #E7C77E; }
-    .result-far    { background: #F3E7DC; border-color: #D2B79A; }
+    .result-good  { background: linear-gradient(160deg, #E9FBF3 0%, #D3F5E4 100%); }
+    .result-close { background: linear-gradient(160deg, #FFF6DE 0%, #FFEBB8 100%); }
+    .result-far   { background: linear-gradient(160deg, #FFF0EA 0%, #FFDFCF 100%); }
 
-    .result-year {
-        font-family: 'Fraunces', serif;
-        font-size: 3.4rem;
+    .hero-year {
+        font-family: 'Fredoka', sans-serif;
         font-weight: 700;
-        color: var(--primary-dark);
+        font-size: 5.2rem;
         line-height: 1;
-        margin: 0.3rem 0;
+        margin: 0.4rem 0;
     }
 
     .score-badge {
         display: inline-block;
-        background: var(--gold);
-        color: #4A3418;
-        font-size: 1.4rem;
-        font-weight: 800;
-        padding: 0.55rem 1.6rem;
+        background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+        color: #3A2A05;
+        font-size: 1.5rem;
+        font-weight: 900;
+        padding: 0.6rem 1.8rem;
         border-radius: 999px;
-        margin-top: 0.6rem;
-        box-shadow: 0 4px 12px rgba(217, 164, 65, 0.4);
+        margin-top: 0.7rem;
+        box-shadow: 0 4px 0 #A9660A, 0 8px 18px rgba(219,139,18,0.4);
+    }
+
+    .decade-badge {
+        display: inline-block;
+        color: #FFFFFF;
+        font-weight: 800;
+        font-size: 1.05rem;
+        padding: 0.35rem 1.2rem;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.18);
     }
 
     .guess-window-label {
         text-align: center;
-        font-family: 'Fraunces', serif;
-        font-size: 3rem !important;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 3.2rem !important;
         font-weight: 700;
-        color: var(--primary-dark);
+        color: var(--coral-dark);
         margin: 0.3rem 0 0.8rem 0;
-        letter-spacing: 1px;
     }
 
     .progress-dots {
@@ -247,7 +292,7 @@ _CSS = """
         font-size: 1.2rem;
         letter-spacing: 8px;
         margin-bottom: 0.4rem;
-        color: var(--primary);
+        color: var(--coral);
     }
 
     .kicker {
@@ -256,104 +301,127 @@ _CSS = """
         letter-spacing: 3px;
         font-size: 0.85rem !important;
         font-weight: 800;
-        color: var(--accent);
+        color: var(--teal-dark);
         margin-bottom: 0.2rem;
     }
 
     .subtitle {
         text-align: center;
-        font-size: 1.25rem !important;
+        font-size: 1.28rem !important;
         color: var(--ink-soft);
+        font-weight: 600;
     }
 
     .subtle-link {
         text-align: center;
-        margin-top: 2.5rem;
-        opacity: 0.5;
-    }
-    .subtle-link .stButton > button {
-        box-shadow: none;
-        border: 1px solid #D8C5A6;
-        background: transparent;
-        min-height: 2.8rem;
-        font-size: 0.95rem !important;
-        font-weight: 600;
-        width: auto;
+        margin-top: 2.2rem;
+        opacity: 0.75;
     }
 
     .hero-image {
-        border-radius: 24px;
-        box-shadow: 0 12px 34px var(--shadow);
+        border-radius: 26px;
+        box-shadow: 0 16px 34px var(--shadow);
         margin-bottom: 1.2rem;
     }
 
-    /* ---------- Vinylplaat (Hitster-inspiratie: draaiende plaat) ---------- */
+    .timeline-strip {
+        height: 12px;
+        border-radius: 999px;
+        margin: 0.9rem 0 0.2rem 0;
+        background: linear-gradient(90deg,
+            #FF6B57, #FFB238, #17B8A6, #8B5CF6, #FF6B57);
+        background-size: 200% 100%;
+        opacity: 0.9;
+    }
+
+    /* ---------- Vinylplaat (draaiende illustratie op de raad-kaart) ---------- */
+    .vinyl-wrap { position: relative; width: 190px; height: 190px; margin: 0.3rem auto 1.2rem auto; }
     .vinyl {
-        width: 190px;
-        height: 190px;
-        margin: 0.5rem auto 1.2rem auto;
+        width: 190px; height: 190px;
         border-radius: 50%;
         background:
-            radial-gradient(circle at center,
-                #C0632B 0 18%,
-                #1a1a1a 18% 20%,
-                #2b2b2b 20% 100%);
+            radial-gradient(circle at center, var(--coral) 0 17%, #201A2E 17% 19%, #2E2740 19% 100%);
+        box-shadow: 0 16px 34px rgba(43,36,64,0.4);
+        animation: spin 7s linear infinite;
         position: relative;
-        box-shadow: 0 14px 34px rgba(0,0,0,0.35);
-        animation: spin 6s linear infinite;
     }
     .vinyl::before {
-        /* groeven */
         content: "";
-        position: absolute; inset: 24px;
+        position: absolute; inset: 22px;
         border-radius: 50%;
-        background: repeating-radial-gradient(
-            circle at center,
-            #333 0 2px, #262626 2px 5px);
+        background: repeating-radial-gradient(circle at center, #3A3350 0 2px, #2E2740 2px 6px);
     }
     .vinyl::after {
-        /* label in het midden */
         content: "";
-        position: absolute; inset: 74px;
+        position: absolute; inset: 76px;
         border-radius: 50%;
-        background: radial-gradient(circle at center, #F4E9D8 0 32%, #C0632B 32% 100%);
-        box-shadow: inset 0 0 0 3px rgba(0,0,0,0.25);
+        background: radial-gradient(circle at center, #FFF3E9 0 30%, var(--coral) 30% 100%);
+        box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2);
     }
+    .vinyl-note {
+        position: absolute;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.8rem;
+        animation: float 3s ease-in-out infinite;
+    }
+    .vinyl-note.n1 { top: -10px; right: 4px; color: var(--teal); animation-delay: 0s; }
+    .vinyl-note.n2 { bottom: 6px; left: -14px; color: var(--violet); animation-delay: 1.2s; }
     @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(-6deg); }
+        50% { transform: translateY(-10px) rotate(6deg); }
+    }
     @media (prefers-reduced-motion: reduce) {
-        .vinyl { animation: none; }
+        .vinyl, .vinyl-note { animation: none; }
     }
 
-    /* ---------- Decennium-badge (kleurcodering) ---------- */
-    .decade-badge {
-        display: inline-block;
-        color: #FFFFFF;
+    /* ---------- Jukebox-illustratie (startscherm) ---------- */
+    .jukebox-wrap { text-align: center; margin: 0.2rem 0 0.6rem 0; }
+
+    /* ---------- Tabs (beheerscherm): pil-vormig, kleurrijk actief tabblad ---------- */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.4rem;
+        background: #FFFFFF;
+        padding: 0.4rem;
+        border-radius: 999px;
+        box-shadow: 0 3px 0 #EADFD0, 0 8px 18px var(--shadow);
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 999px;
         font-weight: 800;
-        font-size: 1.05rem;
-        padding: 0.35rem 1.1rem;
-        border-radius: 999px;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+        font-size: 1.02rem;
+        color: var(--ink-soft);
+        padding: 0.6rem 1.1rem;
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(180deg, var(--violet) 0%, var(--violet-dark) 100%) !important;
+        color: #FFFFFF !important;
+    }
+    .stTabs [data-baseweb="tab-highlight"] { display: none; }
+    .stTabs [data-baseweb="tab-border"] { display: none; }
+
+    /* ---------- Formuliervelden ---------- */
+    input, textarea, [data-baseweb="select"] > div {
+        font-size: 1.1rem !important;
+        border-radius: 14px !important;
+        border-color: #E4D9CC !important;
+    }
+    input:focus, textarea:focus {
+        border-color: var(--coral) !important;
+        box-shadow: 0 0 0 3px rgba(255,107,87,0.18) !important;
     }
 
-    /* Groot onthuld jaartal met decennium-kleur (via inline style gezet) */
-    .hero-year {
-        font-family: 'Fraunces', serif;
-        font-weight: 700;
-        font-size: 5rem;
-        line-height: 1;
-        margin: 0.4rem 0;
+    /* ---------- Containers met rand (bv. liedjesregels in beheerscherm) ---------- */
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 20px !important;
+        border-color: #EDE2D4 !important;
+        box-shadow: 0 2px 0 #EADFD0, 0 6px 16px rgba(43,36,64,0.08);
     }
 
-    /* Tijdlijn-lint als subtiele verwijzing naar Hitster's timeline */
-    .timeline-strip {
-        height: 10px;
-        border-radius: 999px;
-        margin: 0.8rem 0 0.2rem 0;
-        background: linear-gradient(90deg,
-            #B5654A, #C98A2B, #8A7B3A, #7A6BB0, #3E8E7E, #4A7BA6);
-        opacity: 0.85;
+    /* ---------- Expander ---------- */
+    [data-testid="stExpander"] {
+        border-radius: 18px !important;
+        border-color: #EDE2D4 !important;
     }
 </style>
 """
