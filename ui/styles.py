@@ -75,36 +75,46 @@ _CSS = """
     p, li, label, .stMarkdown { font-size: 1.2rem !important; color: var(--ink-soft); line-height: 1.6; }
 
     /* ---------- Knoppen: leren/stoffen 'ingedrukt' effect, groot & gecentreerd voor tv ---------- */
-    .stButton { display: flex; justify-content: center; }
+    /* Robuust centreren: de kolom/container die de knop bevat centreert zijn inhoud. */
+    div[data-testid="stButton"] { display: flex; justify-content: center; width: 100%; }
+    .stButton { display: flex; justify-content: center; width: 100%; }
+
     .stButton > button {
         width: 100%;
-        max-width: 560px;
-        min-height: 4.8rem;
+        max-width: 620px;
+        min-height: 4.6rem;
         margin: 0 auto;
         font-family: 'Nunito', sans-serif;
-        font-size: 1.5rem !important;
+        font-size: 1.55rem !important;
         font-weight: 800;
         border-radius: 20px;
         border: none;
         background: var(--card);
         color: var(--ink);
-        padding: 0.7rem 1.4rem;
+        padding: 0.7rem 1.6rem;
         box-shadow: inset 0 -4px 0 rgba(61,46,31,0.08), 0 3px 8px var(--shadow);
         transition: transform 0.05s ease, filter 0.12s ease;
     }
     .stButton > button:hover { filter: brightness(1.04); }
     .stButton > button:active { transform: translateY(2px); }
+    /* Forceer de tekstkleur ook op de inner <p>/<div> die Streamlit in de knop zet */
+    .stButton > button p, .stButton > button div, .stButton > button span { color: inherit !important; }
 
+    .stButton > button[kind="primary"],
+    .stButton > button[kind="primary"] p,
+    .stButton > button[kind="primary"] div,
+    .stButton > button[kind="primary"] span {
+        color: #FFFFFF !important;
+    }
     .stButton > button[kind="primary"] {
-        font-size: 1.85rem !important;
+        font-size: 1.9rem !important;
         font-weight: 800;
-        min-height: 5.4rem;
-        max-width: 560px;
-        color: #FFFFFF;
+        min-height: 5rem;
+        max-width: 640px;
         border-radius: 999px;
         background: linear-gradient(180deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
         box-shadow: 0 6px 0 var(--terracotta-darker), 0 14px 28px rgba(123,78,44,0.4);
-        text-shadow: 0 2px 3px rgba(61,30,10,0.35);
+        text-shadow: 0 2px 4px rgba(61,30,10,0.45);
         letter-spacing: 0.3px;
     }
     .stButton > button[kind="primary"]:active {
@@ -117,12 +127,12 @@ _CSS = """
     [class*="st-key-next_round"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--sage) 0%, var(--sage-dark) 100%) !important;
         box-shadow: 0 6px 0 #37483B, 0 14px 28px rgba(72,95,78,0.4) !important;
-        text-shadow: 0 2px 3px rgba(30,45,35,0.4) !important;
+        text-shadow: 0 2px 4px rgba(30,45,35,0.5) !important;
     }
     [class*="st-key-confirm_"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--teal) 0%, var(--teal-dark) 100%) !important;
         box-shadow: 0 6px 0 #273D42, 0 14px 28px rgba(51,79,86,0.4) !important;
-        text-shadow: 0 2px 3px rgba(20,40,45,0.4) !important;
+        text-shadow: 0 2px 4px rgba(20,40,45,0.5) !important;
         border-radius: 20px !important;
     }
     [class*="st-key-to_ask_title"] button[kind="primary"],
@@ -131,7 +141,18 @@ _CSS = """
     [class*="st-key-play_again"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--purple) 0%, var(--purple-dark) 100%) !important;
         box-shadow: 0 6px 0 #453742, 0 14px 28px rgba(91,72,86,0.4) !important;
-        text-shadow: 0 2px 3px rgba(45,35,42,0.4) !important;
+        text-shadow: 0 2px 4px rgba(45,35,42,0.5) !important;
+    }
+    /* Tekst in ALLE primaire knoppen (ongeacht kleur) altijd helder wit - hoog contrast */
+    [class*="st-key-rounds_"] button[kind="primary"] *,
+    [class*="st-key-next_round"] button[kind="primary"] *,
+    [class*="st-key-confirm_"] button[kind="primary"] *,
+    [class*="st-key-to_ask_title"] button[kind="primary"] *,
+    [class*="st-key-to_reveal_full"] button[kind="primary"] *,
+    [class*="st-key-to_end"] button[kind="primary"] *,
+    [class*="st-key-play_again"] button[kind="primary"] *,
+    [class*="st-key-home_start"] button[kind="primary"] * {
+        color: #FFFFFF !important;
     }
 
     .subtle-link .stButton > button {
@@ -157,15 +178,15 @@ _CSS = """
         box-shadow: 0 4px 0 #14883C, 0 10px 20px rgba(29,185,84,0.3) !important;
     }
 
-    /* ---------- Schuifregelaar ---------- */
+    /* ---------- Schuifregelaar (tijdlijn) - breed & prominent ---------- */
     [data-testid="stSlider"] [role="slider"] {
-        width: 32px !important; height: 32px !important;
+        width: 40px !important; height: 40px !important;
         background: var(--terracotta) !important;
-        border: 4px solid #FFFFFF !important;
-        box-shadow: 0 0 0 5px rgba(224,142,81,0.25), 0 3px 8px rgba(0,0,0,0.2) !important;
+        border: 5px solid #FFFFFF !important;
+        box-shadow: 0 0 0 6px rgba(224,142,81,0.28), 0 4px 10px rgba(0,0,0,0.25) !important;
     }
     [data-testid="stSlider"] > div > div > div > div { background: var(--terracotta) !important; }
-    [data-testid="stSlider"] > div > div > div { background: #E3D4BE !important; height: 8px !important; border-radius: 999px !important; }
+    [data-testid="stSlider"] > div > div > div { background: #E3D4BE !important; height: 12px !important; border-radius: 999px !important; }
     [data-testid="stSliderTickBarMin"], [data-testid="stSliderTickBarMax"], [data-testid="stThumbValue"] { display: none !important; }
 
     /* ---------- Kaarten ---------- */

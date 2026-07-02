@@ -126,7 +126,7 @@ def _render_home(client: Client) -> None:
         with col_l:
             jukebox_illustration()
         with col_r:
-            polaroid_photo(st.session_state.home_street_photo, width=150, rotate=4)
+            polaroid_photo(st.session_state.home_street_photo, width=230, rotate=4)
 
     st.markdown('<p class="kicker">Muziek van vroeger</p>', unsafe_allow_html=True)
     st.markdown(
@@ -164,7 +164,7 @@ def _render_no_songs() -> None:
 def _render_setup(client: Client) -> None:
     col_l, col_mid, col_r = st.columns([1, 1, 1])
     with col_mid:
-        polaroid_photo("record_player_corner.jpg", width=110, rotate=-4)
+        polaroid_photo("record_player_corner.jpg", width=150, rotate=-4)
     st.markdown('<p class="kicker">Even instellen</p>', unsafe_allow_html=True)
     st.markdown("<h2>Hoeveel liedjes?</h2>", unsafe_allow_html=True)
     big_spacer(0.5)
@@ -215,14 +215,14 @@ def _render_play(client: Client, settings: Settings) -> None:
     col_left, col_mid, col_right = st.columns([1, 2.2, 1])
 
     with col_left:
-        polaroid_photo("record_player_corner.jpg", width=210, rotate=-5)
+        polaroid_photo("record_player_corner.jpg", width=280, rotate=-5)
 
     with col_right:
         if "play_side_photo" not in st.session_state:
             st.session_state.play_side_photo = random.choice(
                 ["street_scene_a.jpg", "street_scene_b.jpg", "canal_scene.jpg"]
             )
-        polaroid_photo(st.session_state.play_side_photo, width=210, rotate=5)
+        polaroid_photo(st.session_state.play_side_photo, width=280, rotate=5)
 
     with col_mid:
         mystery_card()
@@ -299,19 +299,17 @@ def _render_reveal_year() -> None:
     if result.points >= 70:
         st.balloons()
 
-    st.markdown(
-        f"""
-        <div class="result-banner {banner_class}">
-            <h3 style="margin:0 0 0.3rem 0;">{headline}</h3>
-            <p style="margin:0;">Uw antwoord was <strong>{result.guess_center}</strong></p>
-            <p style="margin:0.6rem 0 0 0;">Het juiste jaar is</p>
-            <div class="hero-year" style="color:{color};">{song.year}</div>
-            <span class="decade-badge" style="background:{color};">{decade_label(song.decade)}</span>
-            <div class="timeline-strip"></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    banner_html = (
+        f'<div class="result-banner {banner_class}">'
+        f'<h3 style="margin:0 0 0.3rem 0;">{headline}</h3>'
+        f'<p style="margin:0;">Uw antwoord was <strong>{result.guess_center}</strong></p>'
+        f'<p style="margin:0.6rem 0 0 0;">Het juiste jaar is</p>'
+        f'<div class="hero-year" style="color:{color};">{song.year}</div>'
+        f'<span class="decade-badge" style="background:{color};">{decade_label(song.decade)}</span>'
+        f'<div class="timeline-strip"></div>'
+        f"</div>"
     )
+    st.markdown(banner_html, unsafe_allow_html=True)
     score_badge(result.points)
 
     big_spacer(1)
@@ -321,20 +319,18 @@ def _render_reveal_year() -> None:
 
 
 def _render_ask_title() -> None:
-    st.markdown(
-        """
-        <div class="mystery-card">
-            <div class="vinyl-hang"></div>
-            <span class="note-accent" style="top:-6px; left:14%;">&#9835;</span>
-            <span class="note-accent" style="top:6px; right:16%;">&#9834;</span>
-            <h3 class="script-heading" style="font-family:'Pacifico',cursive; font-size:1.8rem; font-weight:400; margin-top:0.6rem; margin-bottom:0.4rem;">Weten jullie ook...</h3>
-            <p style="font-size:1.35rem !important; font-weight:700; color:#3D2E1F; margin:0;">
-                Welk liedje is dit?<br>En welke artiest?
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    html = (
+        '<div class="mystery-card">'
+        '<div class="vinyl-hang"></div>'
+        '<span class="note-accent" style="top:-6px; left:14%;">&#9835;</span>'
+        '<span class="note-accent" style="top:6px; right:16%;">&#9834;</span>'
+        '<h3 class="script-heading" style="font-family:\'Pacifico\',cursive; font-size:2rem; '
+        'font-weight:400; margin-top:0.6rem; margin-bottom:0.4rem;">Weten jullie ook...</h3>'
+        '<p style="font-size:1.4rem !important; font-weight:700; color:#3D2E1F; margin:0;">'
+        'Welk liedje is dit?<br>En welke artiest?</p>'
+        "</div>"
     )
+    st.markdown(html, unsafe_allow_html=True)
     st.markdown(
         '<p style="text-align:center;">Overleg samen... en kijk dan of jullie gelijk hadden!</p>',
         unsafe_allow_html=True,
