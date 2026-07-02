@@ -12,18 +12,17 @@ def decade_label(decade: int) -> str:
     return f"Jaren {str(decade)[-2:]}"
 
 
-# Kleurcodering per decennium (geïnspireerd op Hitster, maar met warmere,
-# rustigere tinten passend bij de doelgroep). Wordt gebruikt om het
-# onthulde jaartal en de decennium-badges visueel te onderscheiden.
+# Kleurcodering per decennium, exact overgenomen uit het aangeleverde
+# vintage-kleurenpalet (salie, terracotta, bruin, gedempt paars, petrol).
 _DECADE_COLORS: dict[int, str] = {
-    1950: "#B5654A",  # terracotta
-    1960: "#C98A2B",  # oker
-    1970: "#8A7B3A",  # olijf/mosterd
-    1980: "#7A6BB0",  # gedempt paars
-    1990: "#3E8E7E",  # groenblauw
-    2000: "#4A7BA6",  # blauw
-    2010: "#9E4E6E",  # oudroze/bordeaux
-    2020: "#5B7C6B",  # salie
+    1950: "#74411E",  # bruin
+    1960: "#A1663A",  # warme oker-bruin
+    1970: "#E08E51",  # terracotta
+    1980: "#7F6578",  # gedempt paars
+    1990: "#476F78",  # petrol
+    2000: "#64846D",  # salie
+    2010: "#5B4856",  # donker paars
+    2020: "#334F56",  # donker petrol
 }
 
 
