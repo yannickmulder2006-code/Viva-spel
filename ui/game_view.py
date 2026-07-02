@@ -16,6 +16,8 @@ Volledige flow:
 
 from __future__ import annotations
 
+import random
+
 import streamlit as st
 from supabase import Client
 
@@ -29,8 +31,10 @@ from ui.components import (
     hero_image,
     jukebox_illustration,
     mystery_card,
+    polaroid_photo,
     progress_dots,
     score_badge,
+    sticker_badge,
     subtle_admin_link_button,
 )
 
@@ -101,19 +105,38 @@ def _start_game(client: Client, num_rounds: int) -> None:
 def _render_home(client: Client) -> None:
     cfg = _get_app_settings(client)
 
-    big_spacer(0.3)
+    big_spacer(0.4)
+
     if cfg.get("hero_image_url"):
-        hero_image(cfg["hero_image_url"])
+        col_l, col_r = st.columns([1, 1])
+        with col_l:
+            jukebox_illustration()
+        with col_r:
+            hero_image(cfg["hero_image_url"])
     else:
-        jukebox_illustration()
+        # Compositie zoals in de referentiemockup: jukebox links, sfeerfoto rechts.
+        # De foto-keuze wordt één keer per sessie vastgezet (in session_state), anders
+        # zou hij bij elke rerun (elke klik) willekeurig kunnen wisselen.
+        if "home_street_photo" not in st.session_state:
+            st.session_state.home_street_photo = random.choice(
+                ["street_scene_a.jpg", "street_scene_b.jpg", "canal_scene.jpg"]
+            )
+        col_l, col_mid, col_r = st.columns([1, 0.15, 1])
+        with col_l:
+            jukebox_illustration()
+        with col_r:
+            polaroid_photo(st.session_state.home_street_photo, width=150, rotate=4)
 
     st.markdown('<p class="kicker">Muziek van vroeger</p>', unsafe_allow_html=True)
-    st.markdown(f"<h1>{cfg.get('welcome_title') or 'Raad het Jaartal!'}</h1>", unsafe_allow_html=True)
+    st.markdown(
+        f"<h1 class='script'>{cfg.get('welcome_title') or 'Raad het Jaartal!'}</h1>",
+        unsafe_allow_html=True,
+    )
     st.markdown(
         f'<p class="subtitle">{cfg.get("welcome_subtitle") or "Herkent u de liedjes van vroeger?"}</p>',
         unsafe_allow_html=True,
     )
-    big_spacer(1.4)
+    big_spacer(1.2)
 
     if st.button("Start het spel", type="primary", key="home_start"):
         st.session_state.view = "setup"
@@ -138,6 +161,9 @@ def _render_no_songs() -> None:
 
 
 def _render_setup(client: Client) -> None:
+    col_l, col_mid, col_r = st.columns([1, 1, 1])
+    with col_mid:
+        polaroid_photo("record_player_corner.jpg", width=110, rotate=-4)
     st.markdown('<p class="kicker">Even instellen</p>', unsafe_allow_html=True)
     st.markdown("<h2>Hoeveel liedjes?</h2>", unsafe_allow_html=True)
     big_spacer(0.5)
@@ -278,9 +304,11 @@ def _render_ask_title() -> None:
     st.markdown(
         """
         <div class="mystery-card">
-            <div class="icon">&#129300;</div>
-            <h3 style="margin-top:0.6rem;">Weten jullie ook...</h3>
-            <p style="font-size:1.5rem !important; font-weight:700; color:#3A2E24; margin:0.5rem 0 0 0;">
+            <div class="vinyl-hang"></div>
+            <span class="note-accent" style="top:-6px; left:14%;">&#9835;</span>
+            <span class="note-accent" style="top:6px; right:16%;">&#9834;</span>
+            <h3 class="script-heading" style="font-family:'Pacifico',cursive; font-size:1.8rem; font-weight:400; margin-top:0.6rem; margin-bottom:0.4rem;">Weten jullie ook...</h3>
+            <p style="font-size:1.35rem !important; font-weight:700; color:#3D2E1F; margin:0;">
                 Welk liedje is dit?<br>En welke artiest?
             </p>
         </div>
@@ -293,7 +321,7 @@ def _render_ask_title() -> None:
     )
 
     big_spacer(1)
-    if st.button("\U0001F440 Toon het antwoord", type="primary", key="to_reveal_full"):
+    if st.button("Toon het antwoord", type="primary", key="to_reveal_full"):
         st.session_state.view = "reveal_full"
         st.rerun()
 
@@ -366,10 +394,13 @@ def _render_end(client: Client) -> None:
             pass
 
     big_spacer(0.5)
+    col_l, col_mid, col_r = st.columns([1, 1, 1])
+    with col_mid:
+        sticker_badge("Goed<br>gedaan!")
     st.markdown('<p class="kicker">Het is gelukt</p>', unsafe_allow_html=True)
-    st.markdown("<h1>\U0001F3C6 Goed gedaan!</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='script'>Goed gedaan!</h1>", unsafe_allow_html=True)
     st.markdown(
-        f'<p class="subtitle" style="font-weight:800; color:#9E4E1E;">'
+        f'<p class="subtitle" style="font-weight:800; color:#A1663A;">'
         f"{total} van de {max_possible} punten</p>",
         unsafe_allow_html=True,
     )
