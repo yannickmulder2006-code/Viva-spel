@@ -74,6 +74,7 @@ def _reset_for_new_game() -> None:
     st.session_state.round_index = 0
     st.session_state.total_score = 0
     st.session_state.round_results = []
+    st.session_state.pop("play_side_photo", None)
 
 
 def _start_game(client: Client, num_rounds: int) -> None:
@@ -207,36 +208,55 @@ def _render_play(client: Client, settings: Settings) -> None:
     song = songs[index]
 
     progress_dots(index + 1, len(songs))
-    mystery_card()
 
-    if song.has_playable_audio:
-        st.audio(song.audio_url)
-    else:
-        st.info(
-            "\U0001F508 Er is nog geen geluidsfragment voor dit liedje. "
-            "Vraag de begeleider dit liedje af te spelen, en gebruik dan de balk."
+    # Brede tv-compositie: platenspeler-foto links, speelkaart in het midden,
+    # sfeerfoto rechts (net als in de referentiemockup). Op smallere schermen
+    # stapelt Streamlit deze kolommen vanzelf netjes onder elkaar.
+    col_left, col_mid, col_right = st.columns([1, 2.2, 1])
+
+    with col_left:
+        polaroid_photo("record_player_corner.jpg", width=210, rotate=-5)
+
+    with col_right:
+        if "play_side_photo" not in st.session_state:
+            st.session_state.play_side_photo = random.choice(
+                ["street_scene_a.jpg", "street_scene_b.jpg", "canal_scene.jpg"]
+            )
+        polaroid_photo(st.session_state.play_side_photo, width=210, rotate=5)
+
+    with col_mid:
+        mystery_card()
+
+        if song.has_playable_audio:
+            st.audio(song.audio_url)
+        else:
+            st.info(
+                "\U0001F508 Er is nog geen geluidsfragment voor dit liedje. "
+                "Vraag de begeleider dit liedje af te spelen, en gebruik dan de balk."
+            )
+
+        big_spacer(0.5)
+        st.markdown(
+            "<h3 style='text-align:center;'>Naar welk jaar wijst uw gevoel?</h3>",
+            unsafe_allow_html=True,
         )
 
-    big_spacer(0.5)
-    st.markdown(
-        "<h3 style='text-align:center;'>Naar welk jaar wijst uw gevoel?</h3>",
-        unsafe_allow_html=True,
-    )
+        default_value = (settings.min_year + settings.max_year) // 2
+        guess_year = st.slider(
+            "Sleep de balk naar het jaar",
+            min_value=settings.min_year,
+            max_value=settings.max_year,
+            value=default_value,
+            step=1,
+            key=f"guess_slider_{index}",
+            label_visibility="collapsed",
+        )
+        st.markdown(f'<div class="guess-window-label">{guess_year}</div>', unsafe_allow_html=True)
 
-    default_value = (settings.min_year + settings.max_year) // 2
-    guess_year = st.slider(
-        "Sleep de balk naar het jaar",
-        min_value=settings.min_year,
-        max_value=settings.max_year,
-        value=default_value,
-        step=1,
-        key=f"guess_slider_{index}",
-        label_visibility="collapsed",
-    )
-    st.markdown(f'<div class="guess-window-label">{guess_year}</div>', unsafe_allow_html=True)
+        big_spacer(0.5)
+        confirmed = st.button("\u2705 Dit is ons antwoord", type="primary", key=f"confirm_{index}")
 
-    big_spacer(0.5)
-    if st.button("\u2705 Dit is ons antwoord", type="primary", key=f"confirm_{index}"):
+    if confirmed:
         outcome = calculate_score(song.year, guess_year)
         result = RoundResult(
             song=song,

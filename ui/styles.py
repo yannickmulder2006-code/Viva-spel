@@ -52,77 +52,86 @@ _CSS = """
 
     html, body, [class*="css"] {
         font-family: 'Nunito', -apple-system, sans-serif;
-        font-size: 20px;
+        font-size: 22px;
         color: var(--ink);
     }
 
     #MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
 
-    .block-container { padding-top: 1.3rem; padding-bottom: 3rem; max-width: 740px; }
+    .block-container { padding-top: 1.6rem; padding-bottom: 2.5rem; max-width: 1180px; }
 
     /* ---------- Typografie ---------- */
     h1.script, .script-heading {
         font-family: 'Pacifico', cursive !important;
         font-weight: 400 !important;
-        font-size: 2.7rem !important;
+        font-size: 4rem !important;
         color: var(--ink);
         text-align: center;
-        line-height: 1.25;
-        margin: 0.2rem 0 0.3rem 0;
+        line-height: 1.2;
+        margin: 0.2rem 0 0.4rem 0;
     }
-    h2 { font-family: 'Nunito', sans-serif !important; font-size: 1.7rem !important; font-weight: 800 !important; color: var(--ink); text-align: center; }
-    h3 { font-family: 'Nunito', sans-serif !important; font-size: 1.4rem !important; font-weight: 800 !important; color: var(--ink); }
-    p, li, label, .stMarkdown { font-size: 1.16rem !important; color: var(--ink-soft); line-height: 1.6; }
+    h2 { font-family: 'Nunito', sans-serif !important; font-size: 2rem !important; font-weight: 800 !important; color: var(--ink); text-align: center; }
+    h3 { font-family: 'Nunito', sans-serif !important; font-size: 1.6rem !important; font-weight: 800 !important; color: var(--ink); }
+    p, li, label, .stMarkdown { font-size: 1.2rem !important; color: var(--ink-soft); line-height: 1.6; }
 
-    /* ---------- Knoppen: leren/stoffen 'ingedrukt' effect ---------- */
+    /* ---------- Knoppen: leren/stoffen 'ingedrukt' effect, groot & gecentreerd voor tv ---------- */
+    .stButton { display: flex; justify-content: center; }
     .stButton > button {
         width: 100%;
-        min-height: 4.3rem;
+        max-width: 560px;
+        min-height: 4.8rem;
+        margin: 0 auto;
         font-family: 'Nunito', sans-serif;
-        font-size: 1.32rem !important;
+        font-size: 1.5rem !important;
         font-weight: 800;
-        border-radius: 18px;
+        border-radius: 20px;
         border: none;
         background: var(--card);
         color: var(--ink);
-        padding: 0.6rem 1.1rem;
+        padding: 0.7rem 1.4rem;
         box-shadow: inset 0 -4px 0 rgba(61,46,31,0.08), 0 3px 8px var(--shadow);
         transition: transform 0.05s ease, filter 0.12s ease;
     }
-    .stButton > button:hover { filter: brightness(1.03); }
+    .stButton > button:hover { filter: brightness(1.04); }
     .stButton > button:active { transform: translateY(2px); }
 
     .stButton > button[kind="primary"] {
-        font-size: 1.5rem !important;
+        font-size: 1.85rem !important;
         font-weight: 800;
-        min-height: 4.8rem;
+        min-height: 5.4rem;
+        max-width: 560px;
         color: #FFFFFF;
         border-radius: 999px;
         background: linear-gradient(180deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
-        box-shadow: 0 5px 0 var(--terracotta-darker), 0 12px 24px rgba(123,78,44,0.35);
+        box-shadow: 0 6px 0 var(--terracotta-darker), 0 14px 28px rgba(123,78,44,0.4);
+        text-shadow: 0 2px 3px rgba(61,30,10,0.35);
+        letter-spacing: 0.3px;
     }
     .stButton > button[kind="primary"]:active {
-        transform: translateY(4px);
-        box-shadow: 0 1px 0 var(--terracotta-darker), 0 4px 10px rgba(123,78,44,0.3);
+        transform: translateY(5px);
+        box-shadow: 0 1px 0 var(--terracotta-darker), 0 5px 12px rgba(123,78,44,0.35);
     }
 
     /* Kleurmomenten per spelfase (via Streamlit's automatische st-key-* klasse) */
     [class*="st-key-rounds_"] button[kind="primary"],
     [class*="st-key-next_round"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--sage) 0%, var(--sage-dark) 100%) !important;
-        box-shadow: 0 5px 0 #37483B, 0 12px 24px rgba(72,95,78,0.35) !important;
+        box-shadow: 0 6px 0 #37483B, 0 14px 28px rgba(72,95,78,0.4) !important;
+        text-shadow: 0 2px 3px rgba(30,45,35,0.4) !important;
     }
     [class*="st-key-confirm_"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--teal) 0%, var(--teal-dark) 100%) !important;
-        box-shadow: 0 5px 0 #273D42, 0 12px 24px rgba(51,79,86,0.35) !important;
-        border-radius: 16px !important;
+        box-shadow: 0 6px 0 #273D42, 0 14px 28px rgba(51,79,86,0.4) !important;
+        text-shadow: 0 2px 3px rgba(20,40,45,0.4) !important;
+        border-radius: 20px !important;
     }
     [class*="st-key-to_ask_title"] button[kind="primary"],
     [class*="st-key-to_reveal_full"] button[kind="primary"],
     [class*="st-key-to_end"] button[kind="primary"],
     [class*="st-key-play_again"] button[kind="primary"] {
         background: linear-gradient(180deg, var(--purple) 0%, var(--purple-dark) 100%) !important;
-        box-shadow: 0 5px 0 #453742, 0 12px 24px rgba(91,72,86,0.35) !important;
+        box-shadow: 0 6px 0 #453742, 0 14px 28px rgba(91,72,86,0.4) !important;
+        text-shadow: 0 2px 3px rgba(45,35,42,0.4) !important;
     }
 
     .subtle-link .stButton > button {
